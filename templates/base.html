@@ -22,9 +22,11 @@
         </a>
         <nav id="navegacao-principal">
             <ul>
-                <li><a href="{% url 'about' %}">Sobre</a></li>
+              <li><a href="{% url 'movies:index' %}">Filmes</a></li>
+              <!-- adicione esta linha -->
+              <li><a href="{% url 'about' %}">Sobre</a></li>
             </ul>
-        </nav>
+          </nav>
 
     </header>
     <main id="conteiner-principal">
