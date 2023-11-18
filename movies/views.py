@@ -5,7 +5,7 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from .models import Movie
 from django.shortcuts import render, get_object_or_404
-
+from django.views import generic 
 
 def detail_movie(request, movie_id): #controla o que aparece quando clicamos em um filme
     movie = Movie.objects.get(pk=movie_id)
@@ -37,10 +37,14 @@ def create_movie(request): #create adaptado para a base de dados
     else:
         return render(request, 'movies/create.html', {})
     
-def list_movies(request):#linka com a base de dados
+'''def list_movies(request):#linka com a base de dados
     movie_list = Movie.objects.all()
     context = {'movie_list': movie_list}
     return render(request, 'movies/index.html', context)
+'''
+class MovieListView(generic.ListView):#genérica que substitui list_views
+    model = Movie
+    template_name = 'movies/index.html'
 
 def update_movie(request, movie_id):
     movie = get_object_or_404(Movie, pk=movie_id)
