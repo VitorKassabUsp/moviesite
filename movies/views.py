@@ -41,4 +41,27 @@ def list_movies(request):#linka com a base de dados
     movie_list = Movie.objects.all()
     context = {'movie_list': movie_list}
     return render(request, 'movies/index.html', context)
- 
+
+def update_movie(request, movie_id):
+    movie = get_object_or_404(Movie, pk=movie_id)
+
+    if request.method == "POST":
+        movie.name = request.POST['name']
+        movie.release_year = request.POST['release_year']
+        movie_poster_url = request.POST['poster_url']
+        movie.save()
+        return HttpResponseRedirect(
+            reverse('movies:detail', args=(movie.id, )))
+
+    context = {'movie': movie}
+    return render(request, 'movies/update.html', context)
+
+def delete_movie(request, movie_id):
+    movie = get_object_or_404(Movie, pk=movie_id)
+
+    if request.method == "POST":
+        movie.delete()
+        return HttpResponseRedirect(reverse('movies:index'))
+
+    context = {'movie': movie}
+    return render(request, 'movies/delete.html', context)
