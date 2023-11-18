@@ -11,7 +11,8 @@ from .forms import MovieForm
 from .models import Movie, Review
 from .forms import MovieForm, ReviewForm
 from django.urls import reverse, reverse_lazy
-from .models import Movie, Review, List
+from .models import Movie, Review, List, Provider
+from .forms import MovieForm, ReviewForm, ProviderForm
 
 def detail_movie(request, movie_id): #controla o que aparece quando clicamos em um filme
     movie = Movie.objects.get(pk=movie_id)
@@ -31,22 +32,22 @@ def search_movies(request):#search movies adaptada para a base de dados
 
 def create_movie(request):
     if request.method == 'POST':
-        form = MovieForm(request.POST)
-        if form.is_valid():
-            movie_name = form.cleaned_data['name']
-            movie_release_year = form.cleaned_data['release_year']
-            movie_poster_url = form.cleaned_data['poster_url']
-            movie = Movie(name=movie_name,
-                          release_year=movie_release_year,
-                          poster_url=movie_poster_url)
+        movie_form = MovieForm(request.POST)
+        provider_form = ProviderForm(request.POST)
+        if movie_form.is_valid():
+            movie = Movie(**movie_form.cleaned_data)
             movie.save()
+            if provider_form.is_valid(
+            ) and provider_form.cleaned_data['service']:
+                provider = Provider(movie=movie, **provider_form.cleaned_data)
+                provider.save()
             return HttpResponseRedirect(
-                reverse('movies:detail', args=(movie.id, )))
+                reverse('movies:detail', args=(movie.pk, )))
     else:
-        form = MovieForm()
-    context = {'form': form}
+        movie_form = MovieForm()
+        provider_form = ProviderForm()
+    context = {'movie_form': movie_form, 'provider_form': provider_form}
     return render(request, 'movies/create.html', context)
-    
 '''def list_movies(request):#linka com a base de dados
     movie_list = Movie.objects.all()
     context = {'movie_list': movie_list}
