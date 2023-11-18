@@ -7,9 +7,9 @@ from .models import Movie
 from django.shortcuts import render, get_object_or_404
 
 
-def detail_movie(request, movie_id): #controla o que aparece ao clicar em cada filme
-    movie = get_object_or_404(Movie, pk=movie_id)#contempla o caso de erro Not Found
-    context = {'movie': movie_data[movie_id - 1]}
+def detail_movie(request, movie_id): #controla o que aparece quando clicamos em um filme
+    movie = Movie.objects.get(pk=movie_id)
+    context = {'movie': movie}
     return render(request, 'movies/detail.html', context)
 
 
